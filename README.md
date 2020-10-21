@@ -2,6 +2,7 @@
 Fake News Detector.
 
 Modules included(?):
-  Parser
-  Grader (Decision Tree)
- 
+
+    Parser
+
+    Grader (Decision Tree)
