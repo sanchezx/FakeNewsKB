@@ -1,7 +1,5 @@
 import requests
 import pandas as pd
-from UrlParser import UrlParser
-
 
 def get_api_response():
     resp = {
@@ -31,10 +29,6 @@ def get_api_response():
 
 
 def parse_api(jsonPackage):
-    # Return 3 dictionaries.
-    # 1st:
-
-    # return dict with 'raw_url', 'raw_title', & 'tweet_ids'
     bodyDF = {
         'title': jsonPackage['page_data']['title'],
         'text': jsonPackage['page_data']['body'],
