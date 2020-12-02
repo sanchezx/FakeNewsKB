@@ -10,9 +10,11 @@ app.config["DEBUG"] = True
 
 @app.route('/api/v1/KB', methods=['POST'])
 def knowledgeBase():
-    jsonGrade = pd.DataFrame.from_dict({'score': 0.5})
-    # jsonPost = request.get_json()
-    jsonPost = get_api_response()
+    jsonGrade = {'score': 0.5}
+    #jsonGrade = pd.DataFrame.from_dict(jsonGrade)
+    jsonPost = request.get_json()
+    # print(jsonPost)
+    # jsonPost = get_api_response()
 
     if jsonPost is None:
         return {"response": "400 Bad Request"}
@@ -28,26 +30,27 @@ def knowledgeBase():
         scores = []
 
         # Test article body
-        if jsonPost['page_data']['body'] is not None:
+        if len(bodyDF['text'][0]):
             column = 1
             prediction, accuracy = KnowledgeBase(bodyDF).execute(column, urlSetFlag)
-            if prediction:
+            if prediction[-1] == 'true':
                 scores.append(1)
             else:
                 scores.append(0)
 
         # Test article tite.
-        if jsonPost['page_data']['title'] is not None:
+        if len(bodyDF['title'][0]):
             column = 2
             prediction, accuracy = KnowledgeBase(bodyDF).execute(column, urlSetFlag)
-            if prediction:
+            if prediction[-1] == 'true':
                 scores.append(1)
             else:
                 scores.append(0)
 
         # Test url.
+        urlSetFlag = True
         prediction, accuracy = KnowledgeBase(urlDF).execute(1, urlSetFlag)
-        if prediction:
+        if prediction[-1] == 'true':
             scores.append(1)
         else:
             scores.append(0)
@@ -56,6 +59,10 @@ def knowledgeBase():
             jsonGrade['score'] = 1.0
         else:
             jsonGrade['score'] = 0.0
+
+        print(scores)
+        print(jsonGrade)
+        scores = []
 
     return jsonify(jsonGrade)
 
