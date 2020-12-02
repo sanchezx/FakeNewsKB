@@ -1,4 +1,4 @@
-from FakeNewsKB import apiParser
+from FakeNewsKB import ApiParser
 
 if __name__ == '__main__':
-    apiParser.run()
+    ApiParser.run()
