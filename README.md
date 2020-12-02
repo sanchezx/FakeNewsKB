@@ -15,4 +15,4 @@ In order to build and deploy:
     
 Dependencies:
     
-    nltk, sklearn, flask
+    nltk, sklearn, flask, pandas
