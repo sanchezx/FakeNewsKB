@@ -1,6 +1,5 @@
-import pandas as pd
 from flask import Flask, request, jsonify
-from ApiParser import get_api_response, parse_api
+from ApiParser import parse_api
 from KnowledgeBase import KnowledgeBase
 from statistics import mean
 

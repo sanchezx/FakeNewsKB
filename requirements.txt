@@ -88,3 +88,4 @@ Werkzeug==1.0.0
 wrapt==1.12.1
 zipp==0.6.0
 zope.interface==4.7.1
+nltk

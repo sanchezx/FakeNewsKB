@@ -5,7 +5,6 @@ from sklearn.utils import shuffle
 
 from nltk.corpus import stopwords
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -29,8 +28,11 @@ class KnowledgeBase:
     def prep_data(self, column, urlSetFlag):
         if not urlSetFlag:
             # os.get_cwd() didn't work properly, hardcoded location to avoid issues.
-            self.fake = pd.read_csv("C:\\Users\\Xavier\\Desktop\\Python\\School\\CS 4800\\FakeNews\\FakeNewsKB\\Fake.csv")
-            self.true = pd.read_csv("C:\\Users\\Xavier\\Desktop\\Python\\School\\CS 4800\\FakeNews\\FakeNewsKB\\True.csv")
+            file = 'https://raw.githubusercontent.com/sanchezx/FakeNewsKB/master/Fake.csv'
+            self.fake = pd.read_csv(file, sep=',')
+
+            file = 'https://raw.githubusercontent.com/sanchezx/FakeNewsKB/master/True.csv'
+            self.true = pd.read_csv(file, sep=',')
 
             self.fake['target'] = 'fake'
             self.true['target'] = 'true'
@@ -49,11 +51,12 @@ class KnowledgeBase:
             self.data[column] = self.data[column].apply(self.punctuation_removal)
 
             #Only need to run this line on initial run.
-            #nltk.download('stopwords')
+            nltk.download('stopwords')
             stop = stopwords.words('english')
             self.data[column] = self.data[column].apply(lambda x: ' '.join([word for word in x.split() if word not in stop]))
         else:
-            self.urls = pd.read_csv("C:\\Users\\Xavier\\Desktop\\Python\\School\\CS 4800\\FakeNews\\FakeNewsKB\\urlSet.csv")
+            file = 'https://raw.githubusercontent.com/sanchezx/FakeNewsKB/master/urlSet.csv'
+            self.urls = pd.read_csv(file, sep=',')
 
     def runModel(self, column, urlSetFlag):
         features = ["domain_type", "protocol"]
