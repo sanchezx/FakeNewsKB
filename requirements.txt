@@ -38,6 +38,7 @@ more-itertools==8.0.2
 mysql-connector-python==8.0.18
 nba-scraper==1.0.4
 nflgame-redux==2.0.1b1
+nltk==3.5
 numpy==1.18.0
 oauthlib==3.1.0
 opt-einsum==3.2.0
@@ -87,4 +88,3 @@ Werkzeug==1.0.0
 wrapt==1.12.1
 zipp==0.6.0
 zope.interface==4.7.1
-nltk
