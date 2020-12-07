@@ -10,6 +10,7 @@ app.config["DEBUG"] = True
 
 @app.route('/api/v1/KB', methods=['POST'])
 def knowledgeBase():
+    print('\n\tRUNNING....')
     jsonGrade = {'score': 0.5}
     #jsonGrade = pd.DataFrame.from_dict(jsonGrade)
     jsonPost = request.get_json()
@@ -32,7 +33,7 @@ def knowledgeBase():
         # Test article body
         if len(bodyDF['text'][0]):
             column = 1
-            prediction, accuracy = KnowledgeBase(bodyDF).execute(column, urlSetFlag)
+            prediction = KnowledgeBase(bodyDF).execute(column, urlSetFlag)
             if prediction[-1] == 'true':
                 scores.append(1)
             else:
@@ -41,7 +42,7 @@ def knowledgeBase():
         # Test article tite.
         if len(bodyDF['title'][0]):
             column = 2
-            prediction, accuracy = KnowledgeBase(bodyDF).execute(column, urlSetFlag)
+            prediction = KnowledgeBase(bodyDF).execute(column, urlSetFlag)
             if prediction[-1] == 'true':
                 scores.append(1)
             else:
@@ -49,20 +50,21 @@ def knowledgeBase():
 
         # Test url.
         urlSetFlag = True
-        prediction, accuracy = KnowledgeBase(urlDF).execute(1, urlSetFlag)
-        if prediction[-1] == 'true':
+        prediction = KnowledgeBase(urlDF).execute(1, urlSetFlag)
+        if prediction[0] == 1:
             scores.append(1)
         else:
             scores.append(0)
 
-        if mean(scores) >= 0.5:
+        if mean(scores) > 0.6:
             jsonGrade['score'] = 1.0
+        elif mean(scores) > 0.3:
+            jsonGrade['score'] = 0.5
         else:
             jsonGrade['score'] = 0.0
 
-        print(scores)
-        print(jsonGrade)
-        scores = []
+        print(f'\n\n\tDECISION TREE SCORES: {scores}')
+        print(f'\t{jsonGrade}\n')
 
     return jsonify(jsonGrade)
 

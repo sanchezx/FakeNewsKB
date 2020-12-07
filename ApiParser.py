@@ -4,11 +4,12 @@ import pandas as pd
 
 def sendPost(response_num):
     dictToSend = get_api_response(response_num)
-    #print(dictToSend)
+    print(f'\n{dictToSend}\n')
     res = requests.post('http://localhost:5000/api/v1/KB', json=dictToSend)
-    #print('response from server:', res.text)
-    # dictFromServer = res.json()
-    # print(dictFromServer)
+    print(f'\nSERVER RESPONSE: {res.text}')
+    dictFromServer = res.json()
+    print(f'\nJSON PACKAGE RETURNED: {dictFromServer}\n')
+
 
 def get_api_response(case):
     resp = {
@@ -35,16 +36,16 @@ def get_api_response(case):
                }
             },
         2: {
-            "url": "https://www.cnn.com/news_article/",
-               "post_data": {
+                "url": "www.cnn.com/news_article/",
+                "post_data": {
                      "account_name": "",
                      "user_name": "",
-                     "post_body": "!",
+                     "post_body": "",
                      "post_date_time": "",
                      "account_age": "",
                      "profile_picture": ""
                 },
-               "page_data": {
+                "page_data": {
                      "title": "",
                      "subtitle": "",
                      "authors": "",
@@ -57,7 +58,7 @@ def get_api_response(case):
                 }
             },
         3: {
-            "url": "https://www.fake.com/lies/",
+            "url": "http://www.cnn.com/",
             "post_data": {
                 "account_name": "",
                 "user_name": "",
@@ -95,22 +96,28 @@ def parse_api(jsonPackage):
             'date': [date]
         }
         bodyDF = pd.DataFrame.from_dict(bodyDF)
+
+        parsedUrl = Parser(jsonPackage['url']).get_url()
+        urlDF = pd.DataFrame()
+        urlDF['domain_type'] = [parsedUrl['domain_type']]
+        urlDF['protocol'] = [parsedUrl['protocol']]
     except:
-        print('no body')
         bodyDF = None
-
-    # print(bodyDF)
-    # print(jsonPackage)
-
-    encodeUrl = UrlParser(jsonPackage['url']).execute()
-    urlDF = pd.DataFrame()
-    urlDF['domain_type'] = [encodeUrl['domain_type']]
-    urlDF['protocol'] = [encodeUrl['protocol']]
+        urlDF = None
 
     return bodyDF, urlDF
 
 
-class UrlParser:
+
+
+
+
+
+
+
+
+
+class Parser:
     def __init__(self, url):
         try:
             if url[:4] != "http":
@@ -122,16 +129,13 @@ class UrlParser:
 
         self.data = {}
 
-    def execute(self):
+    def get_url(self):
         self.protocolEncoder()
         self.domainEncoder()
 
         return self.data
 
     def protocolEncoder(self):
-        # Protocols for encryption grade
-        # protocol = ["no_protocol", "http", "https"]
-        # protocol_encoding = [0, 1, 2]
         link = self.url
         if isinstance(link, float):
             self.data['protocol'] = 0
@@ -153,6 +157,7 @@ class UrlParser:
         if isinstance(self.url, float):
             self.data['domain_type'] = default
         i = 0
-        while domain[i] not in self.url and i < len(domain):
+        while i < len(domain) and domain[i] not in self.url:
             i += 1
-        self.data['domain_type'] = i
+
+        self.data['domain_type'] = i if i < len(domain) else len(domain)
